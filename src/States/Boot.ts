@@ -1,16 +1,15 @@
 namespace MinAh {
     export class Boot extends Phaser.State {
-        private bootScale: Phaser.Point = new Phaser.Point(1, 1);
-        private bootDimension: Phaser.Point = new Phaser.Point();
+        private sc: Phaser.Point = new Phaser.Point(1, 1); //scale
+        private di: Phaser.Point = new Phaser.Point(); //dimension
 
-        // -------------------------------------------------------------------------
         public init(): void {
-            this.findAspect();
-Venus.Ref.d.addInfo("Aspect.scene_width: " + Aspect.scene_width + ", Aspect.scene_height: " + Aspect.scene_height);
-Venus.Ref.d.addInfo("winWidth: " + window.innerWidth + ", winHeight: " + window.innerHeight);
+            this.setScDi();
+//Venus.Ref.d.addInfo("Aspect.scene_width: " + Aspect.scene_width + ", Aspect.scene_height: " + Aspect.scene_height);
+//Venus.Ref.d.addInfo("winWidth: " + window.innerWidth + ", winHeight: " + window.innerHeight);
 
             this.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
-            this.scale.setUserScale(this.bootScale.x, this.bootScale.y);
+            this.scale.setUserScale(this.sc.x, this.sc.y);
             this.scale.pageAlignHorizontally = true;
             this.scale.pageAlignVertically = true;
             this.scale.setResizeCallback(this.resizeScreen, this);
@@ -26,27 +25,16 @@ Venus.Ref.d.addInfo("winWidth: " + window.innerWidth + ", winHeight: " + window.
             this.game.state.start("Preload");
         }
 
-        private findAspect(): void {
+        private setScDi(): void {
             let innerWidth = window.innerWidth;
             let innerHeight = window.innerHeight;
-    
-            // calculate scale y. Size after scale is truncated (scaleY * game height).
-            // Add small amount to height so scale is bigger for very small amount and we do not loose
-            // 1px line because of number precision
-            let scaleY = (innerHeight + 0.01) / Aspect.scene_height; //Adjust number precision by adding 0.01
-            // get game width with dividing window width with scale y (we want scale y
-            // to be equal to scale x to aviod stretching). Then adjust scale x in the same way as scale y
-            
-            //let gameWidth = Math.round(winWidth / (winHeight / Aspect.scene_height));
-            //let scaleX = (winWidth + 0.01) / gameWidth;
-            let scaleX = scaleY;
-            let dimWidth = Math.round(innerWidth / scaleX);
+
+            let sY = (innerHeight + 0.01) / C.sh; //scaleY
+            let sX = sY; //scaleX
+            let diW = Math.round(innerWidth / sX); //dimWidth
     //Venus.Ref.d.addInfo("scaleX: " + scaleX + ", scaleY: " + scaleY);
-            // save new values
-            this.bootScale.set(scaleY, scaleX);
-            
-            //this._gameDims.set(gameWidth, Aspect.scene_height);
-            this.bootDimension.set(dimWidth, Aspect.scene_height);
+            this.sc.set(sY, sX);
+            this.di.set(diW, C.sh);
         }
         public resizeScreen(scaleManger: Phaser.ScaleManager, bounds: Phaser.Rectangle): void {
 
